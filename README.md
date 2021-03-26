@@ -6,6 +6,6 @@
 
 ## Getting Started
 
-## Secreenshots
+## Screen Shots
 
 ### App Screenshot
