@@ -200,8 +200,8 @@ function startTimer(time) {
   function timer() {
     timeCount.textContent = time; //changing the value of timeCount with time value
     time--; //decrement the time value
-    if (time < 9) {
-      //if timer is less than 9
+    if (time < 5) {
+      //if timer is less than 5
       let addZero = timeCount.textContent;
       timeCount.textContent = "0" + addZero; //add a 0 before time value
     }
