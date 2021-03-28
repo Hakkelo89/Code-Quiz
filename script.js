@@ -24,26 +24,50 @@ continue_btn.onclick = () => {
   quiz_box.classList.add("activeQuiz"); //show quiz box
   showQuestions(0); //calling showQuestions function
   queCounter(1); //passing 1 parameter to queCounter
-  startTimer(10); //calling startTimer function
-  startTimerLine(0); //calling startTimerLine function
+  startTimer(24); //calling startTimer function
+  //startTimerLine(0); //calling startTimerLine function
 };
 
-let timeValue = 10;
+let timeValue = 24;
 let que_count = 0;
 let que_numb = 1;
 let userScore = 0;
 let counter;
+let playerScore = 0;
 let counterLine;
 let widthValue = 0;
+let totalTime = 120;
+let playerTime = 0;
+let punishment = 6;
+let quizTimer;
+
+function startTotalTime() {
+  if (totalTime == 0) {
+    clearInterval(quizTimer);
+  } else if (totalTime < 0) {
+    totalTime = 0;
+    clearInterval(quizTimer);
+  }
+}
+
+// start the total time counter when page onload
+function startQuizPro() {
+  quizTimer = setInterval(function () {
+    totalTime = totalTime - 1;
+    startTotalTime();
+  }, 1000);
+}
 
 const restart_quiz = result_box.querySelector(".buttons .restart");
 const quit_quiz = result_box.querySelector(".buttons .quit");
 
 // if restartQuiz button clicked
 restart_quiz.onclick = () => {
+  clearInterval(quizTimer);
+  totalTime = 120;
   quiz_box.classList.add("activeQuiz"); //show quiz box
   result_box.classList.remove("activeResult"); //hide result box
-  timeValue = 10;
+  timeValue = 24;
   que_count = 0;
   que_numb = 1;
   userScore = 0;
@@ -53,7 +77,7 @@ restart_quiz.onclick = () => {
   clearInterval(counter); //clear counter
   clearInterval(counterLine); //clear counterLine
   startTimer(timeValue); //calling startTimer function
-  startTimerLine(widthValue); //calling startTimerLine function
+  //startTimerLine(widthValue); //calling startTimerLine function
   timeText.textContent = "Time Left"; //change the text of timeText to Time Left
   next_btn.classList.remove("show"); //hide the next button
 };
@@ -77,12 +101,14 @@ next_btn.onclick = () => {
     clearInterval(counter); //clear counter
     clearInterval(counterLine); //clear counterLine
     startTimer(timeValue); //calling startTimer function
-    startTimerLine(widthValue); //calling startTimerLine function
+    //startTimerLine(widthValue); //calling startTimerLine function
     timeText.textContent = "Time Left"; //change the timeText to Time Left
     next_btn.classList.remove("show"); //hide the next button
+    playerTime = totalTime; //set the player game completing time from total counter
   } else {
     clearInterval(counter); //clear counter
     clearInterval(counterLine); //clear counterLine
+    playerTime = totalTime; //set the player game completing time from total counter
     showResult(); //calling showResult function
   }
 };
@@ -132,6 +158,10 @@ function optionSelected(answer) {
   let correctAns = questions[que_count].answer; //getting correct answer from array
   const allOptions = option_list.children.length; //getting all option items
 
+  if (totalTime <= 0) {
+    showResult();
+  }
+
   if (userAns == correctAns) {
     //if user selected option is equal to array's correct answer
     userScore += 1; //upgrading score value with 1
@@ -141,6 +171,7 @@ function optionSelected(answer) {
     console.log("Your correct answers = " + userScore);
   } else {
     answer.classList.add("incorrect"); //adding red color to correct selected option
+    totalTime = totalTime - punishment; //remove 6 seconds punishment for each incorrect answer
     answer.insertAdjacentHTML("beforeend", crossIconTag); //adding cross icon to correct selected option
     console.log("Wrong Answer");
 
@@ -163,6 +194,7 @@ function showResult() {
   info_box.classList.remove("activeInfo"); //hide info box
   quiz_box.classList.remove("activeQuiz"); //hide quiz box
   result_box.classList.add("activeResult"); //show result box
+  playerScore = userScore * (120 - playerTime);
   const scoreText = result_box.querySelector(".score_text");
   if (userScore > 3) {
     // if user scored more than 3
@@ -172,6 +204,8 @@ function showResult() {
       userScore +
       "</p> out of <p>" +
       questions.length +
+      "<br> and your Score :" +
+      playerScore +
       "</p></span>";
     scoreText.innerHTML = scoreTag; //adding new span tag inside score_Text
   } else if (userScore > 1) {
@@ -181,7 +215,12 @@ function showResult() {
       userScore +
       "</p> out of <p>" +
       questions.length +
+      "<br> and your Score :" +
+      playerScore +
       "</p></span>";
+    scoreText.innerHTML = scoreTag;
+  } else if (totalTime <= 0) {
+    let scoreTag = "<span> You have reach the game time and your score: 0 <p>";
     scoreText.innerHTML = scoreTag;
   } else {
     // if user scored less than 1
@@ -190,50 +229,68 @@ function showResult() {
       userScore +
       "</p> out of <p>" +
       questions.length +
+      "<br> and your Score :" +
+      playerScore +
       "</p></span>";
     scoreText.innerHTML = scoreTag;
   }
 }
 
 function startTimer(time) {
-  counter = setInterval(timer, 1000);
-  function timer() {
-    timeCount.textContent = time; //changing the value of timeCount with time value
-    time--; //decrement the time value
-    if (time < 5) {
-      //if timer is less than 5
-      let addZero = timeCount.textContent;
-      timeCount.textContent = "0" + addZero; //add a 0 before time value
-    }
-    if (time < 0) {
-      //if timer is less than 0
-      clearInterval(counter); //clear counter
-      timeText.textContent = "Time Off"; //change the time text to time off
-      const allOptions = option_list.children.length; //getting all option items
-      let correctAns = questions[que_count].answer; //getting correct answer from array
-      for (i = 0; i < allOptions; i++) {
-        if (option_list.children[i].textContent == correctAns) {
-          //if there is an option which is matched to an array answer
-          option_list.children[i].setAttribute("class", "option correct"); //adding green color to matched option
-          option_list.children[i].insertAdjacentHTML("beforeend", tickIconTag); //adding tick icon to matched option
-          console.log("Time Off: Auto selected correct answer.");
+  var userName = document.getElementById("playerName").value;
+  if (userName != "") {
+    counter = setInterval(timer, 1000);
+    startQuizPro();
+    function timer() {
+      timeCount.textContent = time; //changing the value of timeCount with time value
+      time--; //decrement the time value
+      if (time < 5) {
+        //if timer is less than 5
+        let addZero = timeCount.textContent;
+        timeCount.textContent = "0" + addZero; //add a 0 before time value
+      }
+      if (time < 0) {
+        //if timer is less than 0
+        clearInterval(counter); //clear counter
+        timeText.textContent = "Time Off"; //change the time text to time off
+        const allOptions = option_list.children.length; //getting all option items
+        let correctAns = questions[que_count].answer; //getting correct answer from array
+        for (i = 0; i < allOptions; i++) {
+          if (option_list.children[i].textContent == correctAns) {
+            //if there is an option which is matched to an array answer
+            option_list.children[i].setAttribute("class", "option correct"); //adding green color to matched option
+            option_list.children[i].insertAdjacentHTML(
+              "beforeend",
+              tickIconTag
+            ); //adding tick icon to matched option
+            console.log("Time Off: Auto selected correct answer.");
+          }
         }
+        for (i = 0; i < allOptions; i++) {
+          option_list.children[i].classList.add("disabled"); //once user select an option then disabled all options
+        }
+        next_btn.classList.add("show"); //show the next button if user selected any option
       }
-      for (i = 0; i < allOptions; i++) {
-        option_list.children[i].classList.add("disabled"); //once user select an option then disabled all options
-      }
-      next_btn.classList.add("show"); //show the next button if user selected any option
     }
+  } else {
+    alert("pleaseEnterYourName");
+    window.location.reload();
   }
 }
 
 function queCounter(index) {
   //creating a new span tag and passing the question number and total question
-  let totalQueCounterTag =
-    "<span><p>" +
-    index +
-    "</p> of <p>" +
-    questions.length +
-    "</p> Questions</span>";
-  bottom_ques_counter.innerHTML = totalQueCounterTag; //adding new span tag inside bottom_ques_counter
+  if (totalTime <= 0) {
+    showResult();
+  } else {
+    let totalQueCounterTag =
+      "<span><p>" +
+      index +
+      "</p> of <p>" +
+      questions.length +
+      "<span><p> u have " +
+      totalTime +
+      "</p> Seconds left</span>";
+    bottom_ques_counter.innerHTML = totalQueCounterTag; //adding new span tag inside bottom_ques_counter
+  }
 }
