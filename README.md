@@ -1,6 +1,6 @@
 ## Project link
 
-Click [here](https://hakkelo89.github.io/homework-Code-Quiz/) to view project on GitHub page
+Click [here](https://hakkelo89.github.io/Code-Quiz/) to view project on GitHub page
 
 ## Description
 
