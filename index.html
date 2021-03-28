@@ -16,13 +16,17 @@
 
     <!-- Info Box -->
     <div class="info_box">
+        <input id="playerName" placeholder="writeYourGamerName" type="text" required style="width: 80%;margin-left:10%; margin-right:10% ;">
+
         <div class="info-title"><span>Rules of this Quiz</span></div>
         <div class="info-list">
-            <div class="info">1. You will have only <span>10 seconds</span> per each question.</div>
-            <div class="info">2. Once you select your answer, it can't be undone.</div>
-            <div class="info">3. You can't select any option once time goes off.</div>
-            <div class="info">4. You can't exit from the Quiz while you're playing.</div>
-            <div class="info">5. You'll get points on the basis of your correct answers.</div>
+            <div class="info">1. You will have only <span>120 seconds</span> as total game time.</div>
+            <div class="info">2. You will have only <span>24 seconds</span> per each question.</div>
+            <div class="info">3. Once you select your answer, it can't be undone.</div>
+            <div class="info">4. You can't select any option once time goes off.</div>
+            <div class="info">5. You can't exit from the Quiz while you're playing.</div>
+            <div class="info">6. You'll get points on the basis of your correct answers and answers time.</div>
+            <div class="info">7. You'll lose <span>6 seconds</span> as punishment for each incorrect answer.</div>
         </div>
         <div class="buttons">
             <button class="quit">Exit Quiz</button>
@@ -36,7 +40,7 @@
             <div class="title">Quiz Page</div>
             <div class="timer">
                 <div class="time_left_txt">Time Left</div>
-                <div class="timer_sec">10</div>
+                <div class="timer_sec"></div>
             </div>
             <div class="time_line"></div>
         </header>
@@ -78,7 +82,7 @@
 
     <script src="script.js"></script>
 
-    
+
     <!-- Inside this JavaScript file I've inserted Questions and Options only -->
     <!-- <script src="questions.js"></script> -->
 
