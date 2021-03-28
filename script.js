@@ -9,6 +9,14 @@ const option_list = document.querySelector(".option_list");
 const time_line = document.querySelector("header .time_line");
 const timeText = document.querySelector(".timer .time_left_txt");
 const timeCount = document.querySelector(".timer .timer_sec");
+const leadBtn = document.querySelector(".buttons .leader");
+const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
+const highScoresList = document.getElementById("resultsPage");
+const score = {
+  score: 0,
+  name: "",
+};
+
 // if startQuiz button clicked
 start_btn.onclick = () => {
   info_box.classList.add("activeInfo"); //show info box
@@ -195,6 +203,7 @@ function showResult() {
   quiz_box.classList.remove("activeQuiz"); //hide quiz box
   result_box.classList.add("activeResult"); //show result box
   playerScore = userScore * (120 - playerTime);
+  highScores.push(playerScore, document.getElementById("playerName").value);
   const scoreText = result_box.querySelector(".score_text");
   if (userScore > 3) {
     // if user scored more than 3
@@ -232,13 +241,33 @@ function showResult() {
       "<br> and your Score :" +
       playerScore +
       "</p></span>";
+
     scoreText.innerHTML = scoreTag;
+  }
+}
+
+function gotoLeaderBoard() {
+  window.location = "leaderBoard.html";
+}
+
+function loadLeaderBoard() {
+  document.getElementById("resultsPage").innerHTML = "";
+  for (var i = 0, len = localStorage.length; i < len; i++) {
+    var key = localStorage.key(i);
+    var value = localStorage[key];
+    document.getElementById("resultsPage").innerHTML +=
+      "<span> UserName: <p>" + key + "</p> UserScore: <p>" + value;
+    console.log(key + " => " + value);
   }
 }
 
 function startTimer(time) {
   var userName = document.getElementById("playerName").value;
   if (userName != "") {
+    localStorage.setItem(
+      "playerName",
+      document.getElementById("playerName").value
+    );
     counter = setInterval(timer, 1000);
     startQuizPro();
     function timer() {
