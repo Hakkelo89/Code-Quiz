@@ -1,15 +1,15 @@
 //selecting all required elements
-const start_btn = document.querySelector(".start_btn button");
+const start_btn = document.querySelector(".start_btn");
 const info_box = document.querySelector(".info_box");
-const exit_btn = info_box.querySelector(".buttons .quit");
-const continue_btn = info_box.querySelector(".buttons .restart");
+const exit_btn = document.querySelector(".buttons .quit");
+const continue_btn = document.querySelector(".buttons .restart");
 const quiz_box = document.querySelector(".quiz_box");
 const result_box = document.querySelector(".result_box");
 const option_list = document.querySelector(".option_list");
 const time_line = document.querySelector("header .time_line");
 const timeText = document.querySelector(".timer .time_left_txt");
 const timeCount = document.querySelector(".timer .timer_sec");
-const leadBtn = document.querySelector(".buttons .leader");
+
 const highScores = JSON.parse(localStorage.getItem("highScores")) || [];
 const highScoresList = document.getElementById("resultsPage");
 const score = {
@@ -18,6 +18,7 @@ const score = {
 };
 
 // if startQuiz button clicked
+console.log(start_btn);
 start_btn.onclick = () => {
   info_box.classList.add("activeInfo"); //show info box
 };
@@ -26,6 +27,11 @@ start_btn.onclick = () => {
 exit_btn.onclick = () => {
   info_box.classList.remove("activeInfo"); //hide info box
 };
+
+function gotoLeaderBoard() {
+  window.location = "leaderboard.html";
+}
+
 // if continueQuiz button clicked
 continue_btn.onclick = () => {
   info_box.classList.remove("activeInfo"); //hide info box
@@ -66,8 +72,8 @@ function startQuizPro() {
   }, 1000);
 }
 
-const restart_quiz = result_box.querySelector(".buttons .restart");
-const quit_quiz = result_box.querySelector(".buttons .quit");
+const restart_quiz = document.querySelector(".buttons .restart");
+const quit_quiz = document.querySelector(".buttons .quit");
 
 // if restartQuiz button clicked
 restart_quiz.onclick = () => {
@@ -204,6 +210,10 @@ function showResult() {
   result_box.classList.add("activeResult"); //show result box
   playerScore = userScore * (120 - playerTime);
   highScores.push(playerScore, document.getElementById("playerName").value);
+  localStorage.setItem(
+    document.getElementById("playerName").value,
+    playerScore
+  );
   const scoreText = result_box.querySelector(".score_text");
   if (userScore > 3) {
     // if user scored more than 3
@@ -246,28 +256,9 @@ function showResult() {
   }
 }
 
-function gotoLeaderBoard() {
-  window.location = "leaderBoard.html";
-}
-
-function loadLeaderBoard() {
-  document.getElementById("resultsPage").innerHTML = "";
-  for (var i = 0, len = localStorage.length; i < len; i++) {
-    var key = localStorage.key(i);
-    var value = localStorage[key];
-    document.getElementById("resultsPage").innerHTML +=
-      "<span> UserName: <p>" + key + "</p> UserScore: <p>" + value;
-    console.log(key + " => " + value);
-  }
-}
-
 function startTimer(time) {
   var userName = document.getElementById("playerName").value;
   if (userName != "") {
-    localStorage.setItem(
-      "playerName",
-      document.getElementById("playerName").value
-    );
     counter = setInterval(timer, 1000);
     startQuizPro();
     function timer() {
